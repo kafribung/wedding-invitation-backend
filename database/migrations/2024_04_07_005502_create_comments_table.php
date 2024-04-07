@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('comment');
             $table->fullText('comment');
             $table->foreignUuid('parent_id')->nullable()->constrained('comments')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->uuid('owner');
 
             $table->timestamps();
             $table->softDeletes();

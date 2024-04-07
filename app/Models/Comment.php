@@ -17,6 +17,10 @@ class Comment extends Model
 
     protected $keyType = 'string';
 
+    protected $guarded = [
+        'id',
+    ];
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Comment::class, 'parent_id');

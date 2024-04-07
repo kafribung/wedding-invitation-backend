@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CommentRequest;
 use App\Http\Resources\API\CommentResource;
+use App\Http\Resources\API\GenerelResource;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CommentController extends Controller
 {
@@ -20,19 +23,17 @@ class CommentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CommentRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $validated['owner'] = Str::uuid()->toString();
+
+        $data = Comment::create($validated);
+
+        return new GenerelResource($data);
     }
 
     /**

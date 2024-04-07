@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,5 +17,58 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // 400
+        $exceptions->render(function (Exception\BadRequestHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'status' => false,
+                    'error' => 'ERR_BAD_REQUEST',
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        });
+
+        // 401
+        $exceptions->render(function (Exception\UnauthorizedHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'status' => false,
+                    'error' => 'ERR_INVALID_REFRESH_TOKEN',
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        });
+
+        // 403
+        $exceptions->render(function (Exception\AccessDeniedHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'status' => false,
+                    'error' => 'ERR_FORBIDDEN_ACCESS',
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        });
+
+        // 404
+        $exceptions->render(function (Exception\NotFoundHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'status' => false,
+                    'error' => 'ERR_NOT_FOUND',
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        });
+
+        // 500
+        $exceptions->render(function (Exception\ServiceUnavailableHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'status' => false,
+                    'error' => 'ERR_INTERNAL_ERROR',
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        });
     })->create();

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
@@ -20,6 +21,7 @@ class CommentFactory extends Factory
             'name' => fake()->name(),
             'present' => (bool) random_int(0, 1),
             'comment' => fake()->sentence(),
+            'owner' => Str::uuid(),
         ];
     }
 }
