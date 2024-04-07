@@ -13,7 +13,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [Controllers\API\AuthController::class, 'logout']);
 
     // Reminder
-    // Route::apiResource('motivation', MotivationController::class)->except('index');
+    Route::apiResource('comment', Controllers\API\CommentController::class);
 });
 
 Route::post('session', [Controllers\API\AuthController::class, 'login'])->name('login');
