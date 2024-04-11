@@ -5,9 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
 use App\Http\Resources\API\CommentResource;
-use App\Http\Resources\API\GenerelResource;
 use App\Models\Comment;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CommentController extends Controller
@@ -17,9 +15,9 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $comments = Comment::with(['parent', 'likes'])->withCount('likes')->latest()->paginate(5);
+        $comments = Comment::with(['children', 'likes'])->where('parent_id', null)->withCount('likes')->latest()->paginate(10);
 
-        return CommentResource::collection($comments);
+        return new CommentResource\CommentBlockResource($comments);
     }
 
     /**
@@ -28,43 +26,51 @@ class CommentController extends Controller
     public function store(CommentRequest $request)
     {
         $validated = $request->validated();
-
         $validated['owner'] = Str::uuid()->toString();
+        $data['code'] = 201;
 
         $data = Comment::create($validated);
 
-        return new GenerelResource($data);
+        return new CommentResource\CommentGeneralResource($data);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Comment $comment)
     {
-        //
-    }
+        $comment['code'] = 200;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return new CommentResource\CommentGeneralResource($comment);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CommentRequest $request, string $owner)
     {
-        //
+        $comment = Comment::where('owner', $owner)->first();
+
+        $validated = $request->validated();
+
+        $comment->update($validated);
+
+        $comment['code'] = 201;
+
+        return new CommentResource\CommentGeneralResource($comment);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $owner)
     {
-        //
+        $comment = Comment::where('owner', $owner)->first();
+
+        $comment->delete();
+
+        $comment['code'] = 201;
+
+        return new CommentResource\CommentGeneralResource($comment);
     }
 }

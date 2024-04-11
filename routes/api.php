@@ -12,8 +12,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Authentication: Logout
     Route::post('logout', [Controllers\API\AuthController::class, 'logout']);
 
-    // Reminder
+    // Comment
     Route::apiResource('comment', Controllers\API\CommentController::class);
+
+    // Like
+    Route::match(['post', 'patch'], 'like/{comment}', Controllers\API\LikeController::class);
 });
 
 Route::post('session', [Controllers\API\AuthController::class, 'login'])->name('login');

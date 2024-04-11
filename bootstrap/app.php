@@ -61,6 +61,16 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
+        $exceptions->render(function (Exception\MethodNotAllowedHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'status' => false,
+                    'error' => 'ERR_METHOD_NOT_ALLOWED',
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        });
+
         // 500
         $exceptions->render(function (Exception\ServiceUnavailableHttpException $e, Request $request) {
             if ($request->is('api/*')) {

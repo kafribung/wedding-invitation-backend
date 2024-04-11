@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\API;
+namespace App\Http\Resources\API\CommentResource;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GenerelResource extends JsonResource
+class CommentGeneralResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,7 @@ class GenerelResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'code' => 200,
+            'code' => $this->code,
             'data' => [
                 'uuid' => $this->id,
                 'nama' => $this->name,

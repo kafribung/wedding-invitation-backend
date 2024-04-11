@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\API;
+namespace App\Http\Resources\API\CommentResource;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CommentResource extends JsonResource
+class CommentSingellResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,9 +20,9 @@ class CommentResource extends JsonResource
             'hadir' => $this->present,
             'komentar' => $this->comment,
             'created_at' => $this->created_at->locale('id')->diffForHumans(),
-            'comments' => $this->parent ? [new CommentResource($this->parent)] : [],
+            'comments' => $this->children->map(fn ($child) => new CommentSingellResource($child)),
             'like' => [
-                'love' => $this->likes_count ?? 0,
+                'love' => $this->loadCount('likes')->likes_count ?? 0,
             ],
         ];
     }
