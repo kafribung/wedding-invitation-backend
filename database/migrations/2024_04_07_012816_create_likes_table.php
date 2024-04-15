@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
+            $table->uuid('owner');
             $table->uuidMorphs('likeable');
 
             $table->timestamps();

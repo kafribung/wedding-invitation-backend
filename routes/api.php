@@ -16,7 +16,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('comment', Controllers\API\CommentController::class);
 
     // Like
-    Route::match(['post', 'patch'], 'like/{comment}', Controllers\API\LikeController::class);
+    Route::post('like/{comment}', [Controllers\API\LikeController::class, 'store']);
+    Route::patch('like/{like}', [Controllers\API\LikeController::class, 'update']);
 });
 
 Route::post('session', [Controllers\API\AuthController::class, 'login'])->name('login');

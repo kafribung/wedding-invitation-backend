@@ -25,7 +25,7 @@ class AuthController extends Controller
         }
 
         // Remove all token
-        auth()->user()->tokens()->delete();
+        // auth()->user()->tokens()->delete();
 
         // Make token
         $access_token = auth()->user()->createToken('access_token')->plainTextToken;

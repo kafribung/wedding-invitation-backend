@@ -25,6 +25,7 @@ class LikeGeneralResource extends JsonResource
                 'created_at' => $this->created_at->locale('id')->diffForHumans(),
                 'like' => [
                     'love' => $this->likes_count ?? 0,
+                    'own' => $this->owner_like,
                 ],
             ],
             'error' => $this->error ?? null,

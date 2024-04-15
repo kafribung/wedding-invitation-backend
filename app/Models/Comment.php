@@ -17,10 +17,6 @@ class Comment extends Model
 
     protected $keyType = 'string';
 
-    protected $guarded = [
-        'id',
-    ];
-
     public function children(): HasMany
     {
         return $this->hasMany(Comment::class, 'parent_id');

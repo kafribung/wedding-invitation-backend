@@ -4,24 +4,32 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\LikeResource;
-use App\Models\Comment;
+use App\Models;
 use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Store a newly created resource in storage.
      */
-    public function __invoke(Comment $comment, Request $request)
+    public function store(Models\Comment $comment, Request $request)
     {
-        if ($request->isMethod('PATCH')) {
-            $comment->loadCount('likes')->likes()->delete();
+        $comment->loadCount('likes')->likes()->create([
+            'owner' => $owner = str()->uuid()->toString(),
+        ]);
+        $comment['owner_like'] = $owner;
 
-            return new LikeResource\LikeGeneralResource($comment);
-        } elseif ($request->isMethod('POST')) {
-            $comment->loadCount('likes')->likes()->create();
+        return new LikeResource\LikeGeneralResource($comment);
+    }
 
-            return new LikeResource\LikeGeneralResource($comment);
-        }
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(string $owner)
+    {
+        $like = Models\Like::where('owner', $owner)->first();
+        $like->delete();
+
+        return new LikeResource\LikeGeneralResource($like->likeable);
     }
 }

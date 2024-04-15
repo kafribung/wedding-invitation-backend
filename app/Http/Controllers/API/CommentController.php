@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
 use App\Http\Resources\API\CommentResource;
-use App\Models\Comment;
+use App\Models;
 use Illuminate\Support\Str;
 
 class CommentController extends Controller
@@ -15,7 +15,7 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $comments = Comment::with(['children', 'likes'])->where('parent_id', null)->withCount('likes')->latest()->paginate(10);
+        $comments = Models\Comment::with(['children', 'likes'])->where('parent_id', null)->withCount('likes')->latest()->paginate(10);
 
         return new CommentResource\CommentBlockResource($comments);
     }
@@ -27,9 +27,9 @@ class CommentController extends Controller
     {
         $validated = $request->validated();
         $validated['owner'] = Str::uuid()->toString();
-        $data['code'] = 201;
 
-        $data = Comment::create($validated);
+        $data = Models\Comment::create($validated);
+        $data['code'] = 201;
 
         return new CommentResource\CommentGeneralResource($data);
     }
@@ -37,7 +37,7 @@ class CommentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Comment $comment)
+    public function show(Models\Comment $comment)
     {
         $comment['code'] = 200;
 
@@ -49,12 +49,11 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, string $owner)
     {
-        $comment = Comment::where('owner', $owner)->first();
+        $comment = Models\Comment::where('owner', $owner)->first();
 
         $validated = $request->validated();
 
         $comment->update($validated);
-
         $comment['code'] = 201;
 
         return new CommentResource\CommentGeneralResource($comment);
@@ -65,7 +64,7 @@ class CommentController extends Controller
      */
     public function destroy(string $owner)
     {
-        $comment = Comment::where('owner', $owner)->first();
+        $comment = Models\Comment::where('owner', $owner)->first();
 
         $comment->delete();
 
